@@ -1,15 +1,15 @@
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PublicPage from './PublicPage';
 import PrivatePage from './PrivatePage';
 
 const App = () => (
   <Router>
-    <Switch>
-      <Route path="/" exact component={PublicPage} />
-      <Route path="/private" exact component={PrivatePage} />
-    </Switch>
+    <Routes>
+      <Route path="/" element={<PublicPage />} />
+      <Route path="/private" element={<PrivatePage />} />
+    </Routes>
   </Router>
 );
 
