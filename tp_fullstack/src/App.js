@@ -1,6 +1,19 @@
 import logo from './logo.svg';
 import './App.css';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import PublicPage from './PublicPage';
+import PrivatePage from './PrivatePage';
 
+const App = () => (
+  <Router>
+    <Switch>
+      <Route path="/" exact component={PublicPage} />
+      <Route path="/private" exact component={PrivatePage} />
+    </Switch>
+  </Router>
+);
+
+/*
 function App() {
   return (
     <div className="App">
@@ -21,5 +34,6 @@ function App() {
     </div>
   );
 }
+*/
 
 export default App;
