@@ -46,6 +46,9 @@ router.post("/api/task", async (req, res) => {
   // #swagger.description = 'Crear una nueva tarea'
   try {
     const newTask = req.body;
+    const userId = req.user.sub;
+
+    newTask.user = userId;
     const createdTask = await taskService.save(newTask);
     return res.status(201).send(createdTask);
 
@@ -63,6 +66,9 @@ router.put("/api/task/:id",  async (req, res) => {
   try {
     const taskId = req.params.id;
     const updatedTask = req.body;
+    const userId = req.user.sub;
+
+    updatedTask.user = userId;
     const task = await taskService.update(taskId, updatedTask);
 
     if (!task) {
