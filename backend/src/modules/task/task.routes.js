@@ -1,57 +1,38 @@
 const express = require("express");
 const taskService = require("./task.service");
+const Task = require("../../models/task");
+
 const router = express.Router();
 
-// GET /api/task
-router.get("/api/task", async (req, res) => {
-  // #swagger.tags = ['Task']
-  // #swagger.description = 'Obtener una lista de tareas paginadas'
-  // #swagger.parameters['params'] = { in: 'header', description: 'Parámetros de paginación en formato JSON' }
-  try {
-    const params = JSON.parse(req.headers['params'])
+console.log("taskService:", taskService);
 
-    const paginatedTasks = await taskService.paginated(params)
-    return res.status(200).send(paginatedTasks);
-
-  } catch (error) {
-    console.log('Error en GET /api/task:', error)
-    return res.status(500).send({ message: "Error al obtener las tareas", error });
+router.get('/api/task/:name', async (req, res) => {
+  const {name} = req.params;
+  if (!name) {
+    return res.status(400).send({ message: 'Username es requerido' });
   }
-});
+  console.log('Username:', name);
 
-// GET /api/task/:id
-router.get("/api/task/:id",  async (req, res) => {
-  // #swagger.tags = ['Task']
-  // #swagger.description = 'Obtener una tarea por su ID'
-  // #swagger.parameters['id'] = { description: 'ID de la tarea a obtener' }
   try {
-    const taskId = req.params.id;
-    const task = await taskService.findOneById(taskId);
-
-    if (!task) {
-      return res.status(404).send({ message: "Tarea no encontrada" });
-    }
-
-    return res.status(200).send(task);
-
+    const tasks = await Task.find({ user: name });
+    console.log(tasks);
+    res.status(200).send(tasks);
   } catch (error) {
-    console.log("Error en GET /api/task/:id:", error);
-    return res.status(500).send({ message: "Error al obtener la tarea", error });
+    console.error('Error al obtener las tareas:', error);
+    res.status(500).send({ message: 'Error al obtener las tareas' });
   }
 });
 
 // POST /api/task
-router.post("/api/task", async (req, res) => {
-  // #swagger.tags = ['Task']
-  // #swagger.description = 'Crear una nueva tarea'
+router.post('/api/task', async (req, res) => {
   try {
-    const newTask = req.body;
-    const createdTask = await taskService.save(newTask);
-    return res.status(201).send(createdTask);
-
+    const { name, description, user } = req.body;
+    const newTask = new Task({ name, description, user });
+    await newTask.save();
+    res.status(201).send(newTask);
   } catch (error) {
-    console.log("Error en POST /api/task:", error);
-    return res.status(500).send({ message: "Error al crear la tarea", error });
+    console.error('Error creating task:', error);
+    res.status(500).send({ message: 'Error creating task' });
   }
 });
 
@@ -63,6 +44,7 @@ router.put("/api/task/:id",  async (req, res) => {
   try {
     const taskId = req.params.id;
     const updatedTask = req.body;
+
     const task = await taskService.update(taskId, updatedTask);
 
     if (!task) {
@@ -77,25 +59,26 @@ router.put("/api/task/:id",  async (req, res) => {
   }
 });
 
-// DELETE /api/task/:id
-router.delete("/api/task/:id", async (req, res) => {
+router.patch("/api/task/:id", async (req, res) => {
   // #swagger.tags = ['Task']
-  // #swagger.description = 'Eliminar una tarea por su ID'
-  // #swagger.parameters['id'] = { description: 'ID de la tarea a eliminar' }
+  // #swagger.description = 'Actualizar el estado de una tarea a completada'
+  // #swagger.parameters['id'] = { description: 'ID de la tarea a actualizar' }
   try {
     const taskId = req.params.id;
-    const result = await taskService.remote(taskId);
-
+    const result = await Task.findByIdAndUpdate(
+      taskId,
+      { completed: true },
+      { new: true } // Para devolver el documento actualizado
+    );
     if (!result) {
       return res.status(404).send({ message: "Tarea no encontrada" });
     }
-
-    return res.status(200).send({ message: "Tarea eliminada correctamente" });
-
+    return res.status(200).send({ message: "Tarea actualizada correctamente", task: result });
   } catch (error) {
-    console.log("Error en DELETE /api/task/:id:", error);
-    return res.status(500).send({ message: "Error al eliminar la tarea", error });
+    console.error("Error en PATCH /api/task/:id:", error);
+    return res.status(500).send({ message: "Error al actualizar la tarea", error });
   }
 });
+
 
 module.exports = router;

@@ -20,7 +20,7 @@
     "express-jwt-authz": "^2.4.1",
     "express-oauth2-jwt-bearer": "^1.6.0",
     "jwks-rsa": "^3.1.0",
-    "mongodb": "^6.3.0",
+    "mongodb": "^6.9.0",
     "mongoose": "^8.1.2",
     "nodemon": "^3.1.1",
     "swagger-jsdoc": "^6.2.8",
@@ -28,5 +28,6 @@
   },
   "devDependencies": {
     "swagger-autogen": "^2.23.7"
-  }
+  },
+  "proxy": "http://localhost:4000"
 }

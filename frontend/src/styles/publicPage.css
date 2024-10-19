@@ -4,7 +4,7 @@
     font-family: "Nunito Sans", sans-serif;
 }
 
-body {
+.cuerpo {
     display: flex;
     justify-content: center;  /* Centra horizontalmente */
     align-items: center;      /* Centra verticalmente */
@@ -12,7 +12,7 @@ body {
     margin: 0;
 }
 
-.container{
+.container-custom{
     width: 800px; /* o el tamaño que quieras */
     height: 350px; /* o el tamaño que quieras */
     background-color: lightblue;
@@ -24,10 +24,15 @@ h1 {
     text-align: center;
 }
 
-button{
+.btn-custom {
     position: absolute;
-    bottom: 30%;             /* Posiciona el botón en la parte inferior */
+    bottom: 40%;             /* Posiciona el botón en la parte inferior */
     left: 50%;             /* Lo lleva al 50% horizontalmente */
     transform: translateX(-50%);  /* Lo centra horizontalmente */
-    margin-bottom: 10px; 
+    margin-bottom: 10px;
+    background-color: rgb(96, 139, 153);
+}
+
+.btn-custom:hover {
+    background-color: rgb(112, 154, 168);
 }
