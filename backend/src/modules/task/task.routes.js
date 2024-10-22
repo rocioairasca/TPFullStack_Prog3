@@ -9,6 +9,8 @@ router.get('/api/task/:name', async (req, res) => {
   const {name} = req.params;
   const { page = 0, perPage = 10, sort = {} } = req.query;
 
+  console.log(name);
+
   if (!name) {
     return res.status(400).send({ message: 'Username es requerido' });
   }
