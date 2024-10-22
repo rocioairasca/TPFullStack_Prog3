@@ -17,8 +17,7 @@ router.get('/api/task/:name', async (req, res) => {
 
   try {
     const tasks = await paginated({
-      filter: { user: name },
-      filter: { completed: false},
+      filter: { user: name, completed: false },
       page: Number(page),
       perPage: Number(perPage),
       sort: typeof sort === 'string' ? JSON.parse(sort) : sort,
