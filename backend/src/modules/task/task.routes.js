@@ -4,8 +4,6 @@ const Task = require("../../models/task");
 
 const router = express.Router();
 
-console.log("taskService:", taskService);
-
 router.get('/api/task/:name', async (req, res) => {
   const {name} = req.params;
   if (!name) {

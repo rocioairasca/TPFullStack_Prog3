@@ -188,9 +188,26 @@ const PrivatePage = () => {
             </div>
           </div>
         </div>
-      </div>
 
-      <button className='btn btn-primary' onClick={disableTasks}>Completar Tareas Seleccionadas</button>
+        <div className="d-grid gap-2 d-md-flex justify-content-md-end mb-3">
+          <button className='btn btn-primary' onClick={disableTasks}>Completar Tareas Seleccionadas</button>
+        </div>
+        
+        <nav aria-label="Page navigation example">
+          <ul className="pagination justify-content-center">
+            <li className="page-item disabled">
+              <a className="page-link">Previous</a>
+            </li>
+            <li className="page-item"><a className="page-link" href="#">1</a></li>
+            <li className="page-item"><a className="page-link" href="#">2</a></li>
+            <li className="page-item"><a className="page-link" href="#">3</a></li>
+            <li className="page-item">
+              <a className="page-link" href="#">Next</a>
+            </li>
+          </ul>
+        </nav>
+
+      </div>
 
       <footer>
         <div className='container p-3 mt-5 border-top'>
