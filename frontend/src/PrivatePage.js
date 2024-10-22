@@ -25,7 +25,7 @@ const PrivatePage = () => {
     if (user && user.name) { // Asegúrate de que el username no esté vacío
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/task/${user.name}`,
+          `https://tp-full-stack-prog3.vercel.app/api/task/${user.name}`,
           {
             params: {
               page: currentPage,
@@ -70,7 +70,7 @@ const PrivatePage = () => {
         user: user.name, // Añadir el username a los datos de la tarea
       };
 
-      const response = await axios.post("http://localhost:4000/api/task", taskData, {
+      const response = await axios.post("https://tp-full-stack-prog3.vercel.app/api/task", taskData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -85,7 +85,7 @@ const PrivatePage = () => {
   };
 
   const editTask = async (_id) => {
-    const response = await axios.put(`http://localhost:4000/api/task/${_id}`, {...task});
+    const response = await axios.put(`hhttps://tp-full-stack-prog3.vercel.app/api/task/${_id}`, {...task});
     setTasks(tasks.map((t) => (t._id === _id ? response.data : t))); // actualizamos la lista de tareas
     setTask({ name: '', description: '' });
     setEditMode(false);
@@ -95,7 +95,7 @@ const PrivatePage = () => {
   const disableTasks = async () => {
     await Promise.all(
       selectedTasks.map(async (taskId) => {
-        await axios.patch(`http://localhost:4000/api/task/${taskId}`, { completed: true });
+        await axios.patch(`hhttps://tp-full-stack-prog3.vercel.app/api/task/${taskId}`, { completed: true });
       })
     );
 
