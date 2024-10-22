@@ -1,5 +1,5 @@
 const swaggerAutogen = require('swagger-autogen')();
-require('dotenv').config()
+require('dotenv').config({path: '../../../.env'})
 const doc = {
   
   info: {

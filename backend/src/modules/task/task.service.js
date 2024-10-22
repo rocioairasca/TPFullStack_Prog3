@@ -15,19 +15,25 @@ async function save(user){
 }
 
 async function paginated(params) {
-  let perPage = params.perPage?params.perPage:10, page = Math.max(0, params.page)
-  let filter = params.filter?params.filter:{}
-  let sort = params.sort?params.sort:{}
+  const perPage = params.perPage? params.perPage : 10;
+  const page = Math.max(0, params.page);
+  const filter = params.filter ? params.filter : {};
+  const sort = params.sort ? params.sort : {};
   
-  let count = await taskModel.countDocuments(filter)
-  let data = await taskModel.find(filter)
-    .limit(perPage)
-    .skip(perPage * page)
+  const count = await taskModel.countDocuments(filter);
+
+  const data = await taskModel.find(filter)
     .sort(sort)
+    .skip(perPage * page)
+    .limit(perPage)
     .populate('user')
     .exec();
   
-  return pager.createPager(page,data,count,perPage)
+  return {
+    total: count,
+    tasks: data,
+    totalPages: Math.ceil(count / perPage),
+  };
 }
   
 async function update(id, updatedUser) {

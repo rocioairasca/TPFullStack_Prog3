@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({ path: '../.env'})
 const express = require('express')
 const mongoose = require("mongoose");
 const swaggerUi = require('swagger-ui-express')

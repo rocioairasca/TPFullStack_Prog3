@@ -1,20 +1,28 @@
 const express = require("express");
 const taskService = require("./task.service");
+const {paginated} = require("./task.service");
 const Task = require("../../models/task");
 
 const router = express.Router();
 
 router.get('/api/task/:name', async (req, res) => {
   const {name} = req.params;
+  const { page = 0, perPage = 10, sort = {} } = req.query;
+
   if (!name) {
     return res.status(400).send({ message: 'Username es requerido' });
   }
-  console.log('Username:', name);
 
   try {
-    const tasks = await Task.find({ user: name });
-    console.log(tasks);
+    const tasks = await paginated({
+      filter: { user: name },
+      filter: { completed: false},
+      page: Number(page),
+      perPage: Number(perPage),
+      sort: typeof sort === 'string' ? JSON.parse(sort) : sort,
+    });
     res.status(200).send(tasks);
+
   } catch (error) {
     console.error('Error al obtener las tareas:', error);
     res.status(500).send({ message: 'Error al obtener las tareas' });

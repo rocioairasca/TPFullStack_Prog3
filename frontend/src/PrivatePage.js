@@ -11,28 +11,55 @@ const PrivatePage = () => {
   const [task, setTask] = useState({ name: '', description: ''});
   const [editMode, setEditMode] = useState(false);
   const [selectedTasks, setSelectedTasks] = useState([]);
+ 
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const perPage = 7;
 
 
   useEffect(() => {
-
-    const fetchTasks = async () => {
-      if (user && user.name) { // Asegúrate de que el username no esté vacío
-        try {
-          const response = await axios.get(`http://localhost:4000/api/task/${user.name}`); // Usar username en la consulta
-          setTasks(response.data);
-        } catch (error) {
-          console.error('Error al obtener las tareas:', error);
-        }
-      }
-    };
-
     fetchTasks();
-  }, [user]); 
+  }, [currentPage]); 
+  
+  const fetchTasks = async () => {
+    if (user && user.name) { // Asegúrate de que el username no esté vacío
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/api/task/${user.name}`,
+          {
+            params: {
+              page: currentPage,
+              perPage: perPage,
+              sort: JSON.stringify({ createdAt: -1 }),
+            },
+          }
+        );
+        setTasks(response.data.tasks);
+        setTotalPages(response.data.totalPages);
+      } catch (error) {
+        console.error('Error al obtener las tareas:', error);
+      };
+    }
+  };
 
   // Si no está autenticado, redirigir a la página pública
   if (!isAuthenticated) {
     return <Navigate to="/" />;
   }
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+    console.log(currentPage);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+    console.log(currentPage);
+  };
 
   // creamos una nueva tarea
   const createTask = async () => {
@@ -42,15 +69,16 @@ const PrivatePage = () => {
         ...task,
         user: user.name, // Añadir el username a los datos de la tarea
       };
-      console.log(taskData);
+
       const response = await axios.post("http://localhost:4000/api/task", taskData, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log("Respuesta del servidor:", response.data);
       setTasks(prevTasks => [...prevTasks, response.data]); // Añadir la nueva tarea a la lista de tareas
       setTask({ name: '', description: '' });
+      fetchTasks();
+
     } catch (error) {
       console.error("Error creating task:", error);
     }
@@ -71,11 +99,14 @@ const PrivatePage = () => {
       })
     );
 
+    fetchTasks();
+    
     // Filtrar tareas completadas
     const updatedTasks = tasks.filter((t) => !selectedTasks.includes(t._id));
     setTasks(updatedTasks);
     setSelectedTasks([]); // Limpiar selección
   };
+
 
   return (
     <div>
@@ -128,7 +159,7 @@ const PrivatePage = () => {
           <div className='col p-3'>
             <div className="card text-center">
               <div className="card-header">
-                TAREAS
+                TAREAS - Página {currentPage + 1}
               </div>
               <div className="card-body">
                 <table className="table table-striped table-hover">
@@ -146,7 +177,6 @@ const PrivatePage = () => {
                           }}
                         />
                       </th>
-                      <th scope="col">#</th>
                       <th scope="col">Tarea</th>
                       <th scope="col">Descripción</th>
                       <th scope="col">Fecha de Creación</th>
@@ -170,7 +200,6 @@ const PrivatePage = () => {
                             }}
                           />
                         </td>
-                        <th scope="row">{index + 1}</th>
                         <td>{task.name}</td>
                         <td>{task.description}</td>
                         <td>{new Date(task.createdAt).toLocaleString()}</td>
@@ -195,14 +224,18 @@ const PrivatePage = () => {
         
         <nav aria-label="Page navigation example">
           <ul className="pagination justify-content-center">
-            <li className="page-item disabled">
-              <a className="page-link">Previous</a>
+            <li className={`page-item ${currentPage === 0 ? 'disabled' : ''}`}>
+              <p className="page-link" onClick={handlePrevPage}>Anterior</p>
             </li>
-            <li className="page-item"><a className="page-link" href="#">1</a></li>
-            <li className="page-item"><a className="page-link" href="#">2</a></li>
-            <li className="page-item"><a className="page-link" href="#">3</a></li>
-            <li className="page-item">
-              <a className="page-link" href="#">Next</a>
+            {/** 
+            {[...Array(Math.ceil(totalTasks / perPage))].map((_, index) => (
+              <li className={`page-item ${currentPage === index ? 'active' : ''}`} key={index}>
+                <a className="page-link" href='#' onClick={() => handlePageChange(index)}>{index + 1}</a>
+              </li>
+            ))}
+            */}
+            <li className={`page-item ${currentPage < (totalPages - 1) ? '' : 'disabled'}`}>
+              <p className="page-link" onClick={handleNextPage}>Siguiente</p>
             </li>
           </ul>
         </nav>

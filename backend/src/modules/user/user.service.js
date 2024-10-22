@@ -1,7 +1,7 @@
 const axios = require('axios');
 const dotenv = require('dotenv');
 
-dotenv.config();
+dotenv.config( {path: '../../../../.env'} );
 
 // funcion para obtener un token de la API de gestion de Auth0
 const getManagementApiToken = async () => {
