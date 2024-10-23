@@ -85,7 +85,7 @@ const PrivatePage = () => {
   };
 
   const editTask = async (_id) => {
-    const response = await axios.put(`hhttps://tp-full-stack-prog3.vercel.app/api/task/${_id}`, {...task});
+    const response = await axios.put(`https://tp-full-stack-prog3.vercel.app/api/task/${_id}`, {...task});
     setTasks(tasks.map((t) => (t._id === _id ? response.data : t))); // actualizamos la lista de tareas
     setTask({ name: '', description: '' });
     setEditMode(false);
@@ -95,7 +95,7 @@ const PrivatePage = () => {
   const disableTasks = async () => {
     await Promise.all(
       selectedTasks.map(async (taskId) => {
-        await axios.patch(`hhttps://tp-full-stack-prog3.vercel.app/api/task/${taskId}`, { completed: true });
+        await axios.patch(`https://tp-full-stack-prog3.vercel.app/api/task/${taskId}`, { completed: true });
       })
     );
 
