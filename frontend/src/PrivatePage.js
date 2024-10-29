@@ -3,9 +3,10 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import jwtDecode from 'jwt-decode';
 
 const PrivatePage = () => {
-  const { isAuthenticated, user, logout } = useAuth0();
+  const { isAuthenticated, user, logout, getIdTokenClaims, isLoading } = useAuth0();
 
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState({ name: '', description: ''});
@@ -16,13 +17,15 @@ const PrivatePage = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const perPage = 7;
 
+  const [accessToken, setAccessToken] = useState('');
+
 
   useEffect(() => {
     fetchTasks();
-  }, [currentPage]); 
+  }, [currentPage, accessToken]); 
   
   const fetchTasks = async () => {
-    if (user && user.name) { // Asegúrate de que el username no esté vacío
+    if (user && user.name && accessToken) { // Asegúrate de que el username no esté vacío
       try {
         const response = await axios.get(
           `https://tp-full-stack-prog3.vercel.app/api/task/${user.name}`,
@@ -31,6 +34,9 @@ const PrivatePage = () => {
               page: currentPage,
               perPage: perPage,
               sort: JSON.stringify({ createdAt: -1 }),
+            },
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
             },
           }
         );
@@ -41,6 +47,27 @@ const PrivatePage = () => {
       };
     }
   };
+
+  useEffect(() => {
+    const fetchIdTokenClaims = async () => {
+      if (isAuthenticated) {
+        try {
+          const idTokenClaims = await getIdTokenClaims();
+          const token = idTokenClaims.__raw;
+
+          // Decodificar el token para verificar su contenido
+          const decodedToken = jwtDecode(token);
+          console.log('Decoded Token:', decodedToken); // Imprimir el contenido decodificado
+
+          setAccessToken(token);
+        } catch (error) {
+          console.error('Error obteniendo el idTokenClaims:', error);
+        }
+      }
+    };
+
+    fetchIdTokenClaims();
+  }, [isAuthenticated, getIdTokenClaims]);
 
   // Si no está autenticado, redirigir a la página pública
   if (!isAuthenticated) {
@@ -64,7 +91,6 @@ const PrivatePage = () => {
   // creamos una nueva tarea
   const createTask = async () => {
     try {
-      const token = localStorage.getItem('access_token');
       const taskData = {
         ...task,
         user: user.name, // Añadir el username a los datos de la tarea
@@ -72,7 +98,7 @@ const PrivatePage = () => {
 
       const response = await axios.post("https://tp-full-stack-prog3.vercel.app/api/task", taskData, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       setTasks(prevTasks => [...prevTasks, response.data]); // Añadir la nueva tarea a la lista de tareas
@@ -85,7 +111,11 @@ const PrivatePage = () => {
   };
 
   const editTask = async (_id) => {
-    const response = await axios.put(`https://tp-full-stack-prog3.vercel.app/api/task/${_id}`, {...task});
+    const response = await axios.put(`https://tp-full-stack-prog3.vercel.app/api/task/${_id}`, {...task}, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
     setTasks(tasks.map((t) => (t._id === _id ? response.data : t))); // actualizamos la lista de tareas
     setTask({ name: '', description: '' });
     setEditMode(false);
@@ -95,7 +125,11 @@ const PrivatePage = () => {
   const disableTasks = async () => {
     await Promise.all(
       selectedTasks.map(async (taskId) => {
-        await axios.patch(`https://tp-full-stack-prog3.vercel.app/api/task/${taskId}`, { completed: true });
+        await axios.patch(`https://tp-full-stack-prog3.vercel.app/api/task/${taskId}`, { completed: true }, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
       })
     );
 

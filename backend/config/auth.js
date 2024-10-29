@@ -23,6 +23,7 @@ const checkJwt = jwt({
   path: ['/'],
 });
 
+
 module.exports = (req, res, next) => {
   console.log('Token recibido:', req.headers.authorization);  // <-- Aquí verificas el token
   checkJwt(req, res, next);
