@@ -2,10 +2,11 @@ const express = require("express");
 const taskService = require("./task.service");
 const {paginated} = require("./task.service");
 const Task = require("../../models/task");
+const checkJwt = require('../../../config/auth');
 
 const router = express.Router();
 
-router.get('/api/task/:name', async (req, res) => {
+router.get('/api/task/:name', checkJwt, async (req, res) => {
   const {name} = req.params;
   const { page = 0, perPage = 10, sort = {} } = req.query;
 
@@ -31,7 +32,7 @@ router.get('/api/task/:name', async (req, res) => {
 });
 
 // POST /api/task
-router.post('/api/task', async (req, res) => {
+router.post('/api/task', checkJwt, async (req, res) => {
   try {
     const { name, description, user } = req.body;
     const newTask = new Task({ name, description, user });
@@ -44,7 +45,7 @@ router.post('/api/task', async (req, res) => {
 });
 
 // PUT /api/task/:id
-router.put("/api/task/:id",  async (req, res) => {
+router.put("/api/task/:id", checkJwt, async (req, res) => {
   // #swagger.tags = ['Task']
   // #swagger.description = 'Actualizar una tarea existente'
   // #swagger.parameters['id'] = { description: 'ID de la tarea a actualizar' }
@@ -66,7 +67,7 @@ router.put("/api/task/:id",  async (req, res) => {
   }
 });
 
-router.patch("/api/task/:id", async (req, res) => {
+router.patch("/api/task/:id", checkJwt, async (req, res) => {
   // #swagger.tags = ['Task']
   // #swagger.description = 'Actualizar el estado de una tarea a completada'
   // #swagger.parameters['id'] = { description: 'ID de la tarea a actualizar' }
