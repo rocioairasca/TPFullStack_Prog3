@@ -3,10 +3,9 @@ import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import jwtDecode from 'jwt-decode';
 
 const PrivatePage = () => {
-  const { isAuthenticated, user, logout, getIdTokenClaims, isLoading } = useAuth0();
+  const { isAuthenticated, user, logout, getIdTokenClaims } = useAuth0();
 
   const [tasks, setTasks] = useState([]);
   const [task, setTask] = useState({ name: '', description: ''});
@@ -56,10 +55,6 @@ const PrivatePage = () => {
           const token = idTokenClaims.__raw;
 
           console.log('token:', token);
-
-          // Decodificar el token para verificar su contenido
-          const decodedToken = jwtDecode(token);
-          console.log('Decoded Token:', decodedToken); // Imprimir el contenido decodificado
 
           setAccessToken(token);
         } catch (error) {
