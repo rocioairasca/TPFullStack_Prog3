@@ -55,6 +55,8 @@ const PrivatePage = () => {
           const idTokenClaims = await getIdTokenClaims();
           const token = idTokenClaims.__raw;
 
+          console.log('token:', token);
+
           // Decodificar el token para verificar su contenido
           const decodedToken = jwtDecode(token);
           console.log('Decoded Token:', decodedToken); // Imprimir el contenido decodificado
