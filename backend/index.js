@@ -13,11 +13,9 @@ const usuarioRouter = require("./src/modules/user/user.routes");
 const app = express()
 const port = process.env.PORT || 4000;
 
-const allowedOrigins = ['https://tp-full-stack-prog3-ia8u.vercel.app'];
-
 // config basicas
 app.use(cors({
-  origin: allowedOrigins,
+  origin: 'https://tp-full-stack-prog3-ia8u.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true
 }));
