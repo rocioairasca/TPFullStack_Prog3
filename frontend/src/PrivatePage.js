@@ -24,7 +24,7 @@ const PrivatePage = () => {
   }, [currentPage, accessToken]); 
   
   const fetchTasks = async () => {
-    if (user && user.name && accessToken) { // Asegúrate de que el username no esté vacío
+    if (user && user.name && accessToken) {
       try {
         const response = await axios.get(
           `https://tp-full-stack-prog3.vercel.app/api/task/${user.name}`,
