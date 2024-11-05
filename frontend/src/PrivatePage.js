@@ -18,7 +18,6 @@ const PrivatePage = () => {
 
   const [accessToken, setAccessToken] = useState('');
 
-  
   const fetchTasks = useCallback(async () => {
     if (user && user.name && accessToken) {
       try {
@@ -44,8 +43,10 @@ const PrivatePage = () => {
   }, [user, accessToken, currentPage, perPage]);
 
   useEffect(() => {
-    fetchTasks();
-  }, [currentPage, accessToken, fetchTasks]); 
+    if (user && accessToken) {
+      fetchTasks();
+    }
+  }, [currentPage, accessToken, fetchTasks, user]); 
 
   useEffect(() => {
     const fetchIdTokenClaims = async () => {
@@ -245,7 +246,7 @@ const PrivatePage = () => {
                       ))
                     ) : (
                       <p>No hay tareas disponibles</p>
-                    )};
+                    )}
                   </tbody>
                 </table>
               </div>
