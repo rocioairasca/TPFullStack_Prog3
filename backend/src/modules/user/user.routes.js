@@ -5,7 +5,7 @@ const { checkJwt } = require('../../../config/auth');
 const router = express.Router();
 
 // GET /api/user
-router.get("/user", checkJwt, async (req, res) => {
+router.get("/api/user", checkJwt, async (req, res) => {
   try {
     const users = await userService.findAll();
     res.json(users);
