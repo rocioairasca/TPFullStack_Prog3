@@ -216,32 +216,36 @@ const PrivatePage = () => {
                   </thead>
 
                   <tbody>
-                    {tasks.map((task, index) => (
-                      <tr key={task._id}>
-                        <td>
-                          <input
-                            type="checkbox"
-                            checked={selectedTasks.includes(task._id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedTasks([...selectedTasks, task._id]);
-                              } else {
-                                setSelectedTasks(selectedTasks.filter((id) => id !== task._id));
-                              }
-                            }}
-                          />
-                        </td>
-                        <td>{task.name}</td>
-                        <td>{task.description}</td>
-                        <td>{new Date(task.createdAt).toLocaleString()}</td>
-                        <td>
-                          <div className="btn-group" role="group" aria-label="Basic example">
-                            <button onClick={() => { setTask(task); setEditMode(true); }} className="btn btn-info">Editar</button>
-                            {/* Puedes agregar más botones aquí si es necesario */}
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                    {tasks && tasks.length > 0 ? (
+                      tasks.map((task, index) => (
+                        <tr key={task._id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={selectedTasks.includes(task._id)}
+                              onChange={(e) => {
+                                if (e.target.checked) {
+                                  setSelectedTasks([...selectedTasks, task._id]);
+                                } else {
+                                  setSelectedTasks(selectedTasks.filter((id) => id !== task._id));
+                                }
+                              }}
+                            />
+                          </td>
+                          <td>{task.name}</td>
+                          <td>{task.description}</td>
+                          <td>{new Date(task.createdAt).toLocaleString()}</td>
+                          <td>
+                            <div className="btn-group" role="group" aria-label="Basic example">
+                              <button onClick={() => { setTask(task); setEditMode(true); }} className="btn btn-info">Editar</button>
+                              {/* Puedes agregar más botones aquí si es necesario */}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <p>No hay tareas disponibles</p>
+                    )};
                   </tbody>
                 </table>
               </div>
