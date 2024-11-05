@@ -5,7 +5,7 @@ const jwksRsa = require('jwks-rsa');
 
 const authConfig = {
   domain: process.env.AUTH0_DOMAIN,
-  audience: process.env.AUTH0_AUDIENCE,
+  audience: process.env.AUTH0_CLIENT_ID,
 };
 
 // middleware para validar el JWT
