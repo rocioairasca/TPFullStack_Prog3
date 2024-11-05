@@ -51,7 +51,25 @@ async function findUserById(userId) {
   return response.data; // Devuelve la información del usuario
 }
 
+async function findAll() {
+  const token = await getManagementApiToken();
+  const auth0Domain = process.env.AUTH0_DOMAIN;
+
+  try {
+    const response = await axios.get(`https://${auth0Domain}/api/v2/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data; // Devuelve la lista de usuarios
+  } catch (error) {
+    throw new Error('Error fetching users: ' + error.message);
+  }
+}
+
 module.exports = { 
   getAllUsers,
-  findUserById 
+  findUserById,
+  findAll,
+  getManagementApiToken 
 };
