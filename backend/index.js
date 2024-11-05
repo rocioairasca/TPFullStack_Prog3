@@ -15,7 +15,7 @@ const port = process.env.PORT || 4000;
 
 // config basicas
 app.use(cors({
-  origin: 'https://tp-full-stack-prog3-ia8u.vercel.app',
+  origin: 'http://localhost:4000',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true
 }));

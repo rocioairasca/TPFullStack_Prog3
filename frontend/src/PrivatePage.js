@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Navigate } from 'react-router-dom';
@@ -18,16 +18,12 @@ const PrivatePage = () => {
 
   const [accessToken, setAccessToken] = useState('');
 
-
-  useEffect(() => {
-    fetchTasks();
-  }, [currentPage, accessToken]); 
   
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     if (user && user.name && accessToken) {
       try {
         const response = await axios.get(
-          `https://tp-full-stack-prog3.vercel.app/api/task/${user.name}`,
+          `http://localhost:4000/api/task/${user.name}`,
           {
             params: {
               page: currentPage,
@@ -45,7 +41,11 @@ const PrivatePage = () => {
         console.error('Error al obtener las tareas:', error);
       };
     }
-  };
+  }, [user, accessToken, currentPage, perPage]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [currentPage, accessToken, fetchTasks]); 
 
   useEffect(() => {
     const fetchIdTokenClaims = async () => {
@@ -93,7 +93,7 @@ const PrivatePage = () => {
         user: user.name, // Añadir el username a los datos de la tarea
       };
 
-      const response = await axios.post("https://tp-full-stack-prog3.vercel.app/api/task", taskData, {
+      const response = await axios.post("http://localhost:4000/api/task", taskData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -108,7 +108,7 @@ const PrivatePage = () => {
   };
 
   const editTask = async (_id) => {
-    const response = await axios.put(`https://tp-full-stack-prog3.vercel.app/api/task/${_id}`, {...task}, {
+    const response = await axios.put(`http://localhost:4000/api/task/${_id}`, {...task}, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -122,7 +122,7 @@ const PrivatePage = () => {
   const disableTasks = async () => {
     await Promise.all(
       selectedTasks.map(async (taskId) => {
-        await axios.patch(`https://tp-full-stack-prog3.vercel.app/api/task/${taskId}`, { completed: true }, {
+        await axios.patch(`http://localhost:4000/api/task/${taskId}`, { completed: true }, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
